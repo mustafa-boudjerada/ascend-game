@@ -1,0 +1,19 @@
+{
+  "name": "ASCEND",
+  "short_name": "ASCEND",
+  "description": "The daily game that makes you sharper in real life. Play 5 minutes. Get better at life today.",
+  "start_url": "/",
+  "display": "standalone",
+  "background_color": "#07080e",
+  "theme_color": "#07080e",
+  "orientation": "portrait",
+  "categories": ["games", "education", "productivity"],
+  "icons": [
+    {
+      "src": "data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><rect width='100' height='100' rx='20' fill='%2307080e'/><text x='50' y='65' font-size='50' text-anchor='middle' fill='%238b5cf6'>↑</text></svg>",
+      "sizes": "any",
+      "type": "image/svg+xml",
+      "purpose": "any maskable"
+    }
+  ]
+}
