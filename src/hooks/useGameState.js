@@ -1,9 +1,10 @@
 // ─────────────────────────────────────────────
 // ASCEND — Game State Manager
-// localStorage persistence, XP, streaks, ranks
+// localStorage persistence + Supabase cloud sync
 // ─────────────────────────────────────────────
 import { useState, useEffect, useCallback } from 'react';
 import { RANKS, TITLES, MIND_CHALLENGES, LIFE_CHALLENGES, EDGE_CHALLENGES } from '../data/challenges.js';
+import { syncToCloud, saveDailyResult } from '../lib/cloudSync.js';
 
 const STORAGE_KEY = 'ascend_save_v1';
 
@@ -96,7 +97,7 @@ export function getEarnedTitles(laneXP) {
   return TITLES.filter(t => (laneXP[t.lane] || 0) >= t.xpReq);
 }
 
-export function useGameState() {
+export function useGameState(userId = null) {
   const [state, setState] = useState(() => {
     const loaded = loadState();
     const today = getTodayString();
@@ -151,7 +152,7 @@ export function useGameState() {
     setState(prev => {
       const newStreak = prev.streak + 1;
       const perfect = results.mind && results.life && (results.edge === true || results.edge === null);
-      return {
+      const next = {
         ...prev,
         dailyCompleted: true,
         dailyResults: results,
@@ -160,8 +161,21 @@ export function useGameState() {
         bestStreak: Math.max(prev.bestStreak, newStreak),
         perfectDays: perfect ? prev.perfectDays + 1 : prev.perfectDays,
       };
+      // Cloud sync (fire-and-forget)
+      if (userId) {
+        syncToCloud(userId, {
+          playXP: next.totalPlayXP, lifeXP: next.totalLifeXP,
+          laneXP: next.laneXP, streak: next.streak,
+          bestStreak: next.bestStreak, challengesSolved: next.totalChallengesCompleted,
+          missionsCompleted: next.missionsCompleted,
+          duelsPlayed: next.duelsSent, duelsWon: next.duelsWon,
+          lastPlayDate: today,
+        });
+        saveDailyResult(userId, today, results, next.totalPlayXP - prev.totalPlayXP);
+      }
+      return next;
     });
-  }, []);
+  }, [userId]);
 
   const setOnboarded = useCallback((name, path) => {
     setState(prev => ({
@@ -192,6 +206,7 @@ export function useGameState() {
     totalXP,
     rank,
     titles,
+    userId,
     todayChallenges: getDailyChallenges(state.todaySeed || getTodayString()),
   };
 }

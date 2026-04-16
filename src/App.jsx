@@ -1,9 +1,10 @@
 // ─────────────────────────────────────────────
 // ASCEND — Main App Shell
-// Navigation + Screen Routing + Toast System
+// Navigation + Screen Routing + Toast + Auth
 // ─────────────────────────────────────────────
 import { useState, useCallback } from 'react';
 import { useGameState } from './hooks/useGameState.js';
+import { useAuth } from './hooks/useAuth.js';
 import Onboarding from './components/Onboarding.jsx';
 import Home from './components/Home.jsx';
 import DailyAscend from './components/DailyAscend.jsx';
@@ -19,7 +20,9 @@ const TABS = [
 ];
 
 export default function App() {
-  const game = useGameState();
+  const { user } = useAuth();
+  const game = useGameState(user?.id || null);
+
   const [screen, setScreen] = useState('home');
   const [playing, setPlaying] = useState(false);
   const [toast, setToast] = useState(null);
