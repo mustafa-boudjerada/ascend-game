@@ -5,7 +5,7 @@
 import { SKILL_LANES, PATHS } from '../data/challenges.js';
 import { getEarnedTitles } from '../hooks/useGameState.js';
 
-export default function Profile({ game, showToast }) {
+export default function Profile({ game, showToast, user, onSignOut, onSignIn }) {
   const { state, totalXP, rank, titles } = game;
   const path = PATHS.find(p => p.id === state.path);
 
@@ -143,6 +143,38 @@ export default function Profile({ game, showToast }) {
       <button className="btn btn-primary btn-full" onClick={generateShareCard} style={{ marginBottom: '12px' }}>
         📋 Copy Share Card
       </button>
+
+      {/* Account Section */}
+      <h3 style={{ marginTop: '16px', marginBottom: '10px' }}>Account</h3>
+      <div className="card" style={{ marginBottom: '12px' }}>
+        {user ? (
+          <div style={{ textAlign: 'center' }}>
+            <div style={{ fontSize: '13px', color: 'var(--success)', marginBottom: '4px', fontWeight: '600' }}>
+              ☁️ Cloud Sync Active
+            </div>
+            <div style={{ fontSize: '12px', color: 'var(--text-muted)', marginBottom: '12px' }}>
+              {user.email}
+            </div>
+            <button className="btn btn-ghost" onClick={onSignOut}
+              style={{ fontSize: '13px', color: 'var(--text-muted)' }}>
+              Sign Out
+            </button>
+          </div>
+        ) : (
+          <div style={{ textAlign: 'center' }}>
+            <div style={{ fontSize: '13px', color: 'var(--warning)', marginBottom: '4px', fontWeight: '600' }}>
+              ⚠️ Playing Offline
+            </div>
+            <div style={{ fontSize: '12px', color: 'var(--text-muted)', marginBottom: '12px' }}>
+              Progress saved on this device only.
+            </div>
+            <button className="btn btn-primary" onClick={onSignIn}
+              style={{ fontSize: '13px', padding: '10px 24px' }}>
+              Sign In to Sync ↑
+            </button>
+          </div>
+        )}
+      </div>
 
       {/* Reset */}
       <button className="btn btn-ghost btn-full" style={{ color: 'var(--error)', fontSize: '13px' }}

@@ -1,10 +1,12 @@
 // ─────────────────────────────────────────────
 // ASCEND — Main App Shell
-// Navigation + Screen Routing + Toast + Auth
+// Auth + Navigation + Screen Routing + Toast
 // ─────────────────────────────────────────────
 import { useState, useCallback } from 'react';
 import { useGameState } from './hooks/useGameState.js';
 import { useAuth } from './hooks/useAuth.js';
+import { ensurePlayer } from './lib/cloudSync.js';
+import AuthScreen from './components/AuthScreen.jsx';
 import Onboarding from './components/Onboarding.jsx';
 import Home from './components/Home.jsx';
 import DailyAscend from './components/DailyAscend.jsx';
@@ -20,12 +22,14 @@ const TABS = [
 ];
 
 export default function App() {
-  const { user } = useAuth();
+  const { user, loading: authLoading, signUp, signIn, signOut } = useAuth();
   const game = useGameState(user?.id || null);
-
   const [screen, setScreen] = useState('home');
   const [playing, setPlaying] = useState(false);
   const [toast, setToast] = useState(null);
+  const [authSkipped, setAuthSkipped] = useState(() => {
+    try { return localStorage.getItem('ascend_auth_skipped') === 'true'; } catch { return false; }
+  });
 
   const showToast = useCallback((message) => {
     setToast(message);
@@ -42,11 +46,61 @@ export default function App() {
     showToast('🎯 Daily Ascend Complete!');
   }, [game, showToast]);
 
-  // ─── Onboarding gate ───
-  if (!game.state.onboarded) {
+  const handleAuth = useCallback(async (mode, email, password) => {
+    if (mode === 'signup') {
+      await signUp(email, password, game.state.playerName || 'Player', game.state.path || 'thinker');
+    } else {
+      await signIn(email, password);
+    }
+  }, [signUp, signIn, game.state.playerName, game.state.path]);
+
+  const handleSkipAuth = useCallback(() => {
+    setAuthSkipped(true);
+    try { localStorage.setItem('ascend_auth_skipped', 'true'); } catch {}
+  }, []);
+
+  const handleSignOut = useCallback(async () => {
+    await signOut();
+    setAuthSkipped(false);
+    try { localStorage.removeItem('ascend_auth_skipped'); } catch {}
+    showToast('Signed out');
+  }, [signOut, showToast]);
+
+  // ─── Loading splash ───
+  if (authLoading) {
+    return (
+      <div className="app-container" style={{
+        display: 'flex', alignItems: 'center', justifyContent: 'center',
+        minHeight: '100dvh',
+      }}>
+        <div className="onboarding-logo" style={{ fontSize: '36px', animation: 'pulse 1.5s infinite' }}>
+          ASCEND
+        </div>
+      </div>
+    );
+  }
+
+  // ─── Auth gate — show if not signed in AND hasn't skipped ───
+  if (!user && !authSkipped) {
     return (
       <div className="app-container">
-        <Onboarding onComplete={game.setOnboarded} />
+        <AuthScreen onAuth={handleAuth} onSkip={handleSkipAuth} />
+      </div>
+    );
+  }
+
+  // ─── Onboarding gate ───
+  if (!game.state.onboarded) {
+    const handleOnboardComplete = async (name, path) => {
+      game.setOnboarded(name, path);
+      // If signed in, create cloud player record
+      if (user) {
+        try { await ensurePlayer(user.id, name, path); } catch (e) { console.error(e); }
+      }
+    };
+    return (
+      <div className="app-container">
+        <Onboarding onComplete={handleOnboardComplete} />
       </div>
     );
   }
@@ -101,7 +155,15 @@ export default function App() {
       )}
       {screen === 'ranks' && <Leaderboard game={game} />}
       {screen === 'duels' && <Duels game={game} showToast={showToast} />}
-      {screen === 'profile' && <Profile game={game} showToast={showToast} />}
+      {screen === 'profile' && (
+        <Profile
+          game={game}
+          showToast={showToast}
+          user={user}
+          onSignOut={handleSignOut}
+          onSignIn={() => { setAuthSkipped(false); setScreen('home'); }}
+        />
+      )}
 
       {/* Toast */}
       {toast && <div className="toast">{toast}</div>}
