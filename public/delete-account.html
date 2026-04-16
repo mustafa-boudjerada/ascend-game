@@ -1,0 +1,279 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>ASCEND — Delete My Account</title>
+  <style>
+    * { margin: 0; padding: 0; box-sizing: border-box; }
+    body {
+      font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+      background: #060810;
+      color: #e0e0e0;
+      line-height: 1.7;
+      padding: 24px;
+      max-width: 680px;
+      margin: 0 auto;
+      min-height: 100vh;
+    }
+
+    .logo {
+      font-size: 22px;
+      font-weight: 800;
+      letter-spacing: 2px;
+      background: linear-gradient(135deg, #a78bfa, #22d3ee);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      background-clip: text;
+      margin-bottom: 32px;
+      display: inline-block;
+    }
+
+    h1 {
+      color: #f87171;
+      font-size: 26px;
+      margin-bottom: 8px;
+    }
+
+    .subtitle {
+      color: #888;
+      font-size: 14px;
+      margin-bottom: 32px;
+    }
+
+    .info-box {
+      background: rgba(248, 113, 113, 0.07);
+      border: 1px solid rgba(248, 113, 113, 0.2);
+      border-radius: 12px;
+      padding: 20px 24px;
+      margin-bottom: 28px;
+    }
+
+    .info-box h2 {
+      color: #f87171;
+      font-size: 15px;
+      margin-bottom: 12px;
+      text-transform: uppercase;
+      letter-spacing: 0.5px;
+    }
+
+    .info-box ul {
+      padding-left: 20px;
+    }
+
+    .info-box li {
+      color: #c0c0c0;
+      font-size: 14px;
+      margin-bottom: 6px;
+    }
+
+    .note-box {
+      background: rgba(251, 191, 36, 0.07);
+      border: 1px solid rgba(251, 191, 36, 0.2);
+      border-radius: 12px;
+      padding: 16px 20px;
+      margin-bottom: 28px;
+      font-size: 14px;
+      color: #fbbf24;
+    }
+
+    .note-box strong {
+      display: block;
+      margin-bottom: 4px;
+    }
+
+    label {
+      display: block;
+      color: #a78bfa;
+      font-size: 13px;
+      font-weight: 600;
+      margin-bottom: 6px;
+      letter-spacing: 0.5px;
+      text-transform: uppercase;
+    }
+
+    input, select, textarea {
+      width: 100%;
+      background: rgba(255,255,255,0.04);
+      border: 1px solid rgba(255,255,255,0.1);
+      border-radius: 10px;
+      color: #e0e0e0;
+      font-size: 15px;
+      padding: 12px 16px;
+      margin-bottom: 20px;
+      outline: none;
+      transition: border-color 0.2s;
+      font-family: inherit;
+    }
+
+    input:focus, select:focus, textarea:focus {
+      border-color: #a78bfa;
+    }
+
+    select option {
+      background: #0d0f1a;
+      color: #e0e0e0;
+    }
+
+    textarea {
+      resize: vertical;
+      min-height: 100px;
+    }
+
+    .btn-delete {
+      width: 100%;
+      padding: 14px;
+      border: none;
+      border-radius: 12px;
+      background: linear-gradient(135deg, #ef4444, #dc2626);
+      color: white;
+      font-size: 16px;
+      font-weight: 700;
+      cursor: pointer;
+      letter-spacing: 0.5px;
+      transition: opacity 0.2s, transform 0.1s;
+      margin-bottom: 16px;
+    }
+
+    .btn-delete:hover {
+      opacity: 0.9;
+      transform: translateY(-1px);
+    }
+
+    .btn-delete:active {
+      transform: translateY(0);
+    }
+
+    .alt-method {
+      background: rgba(255,255,255,0.03);
+      border: 1px solid rgba(255,255,255,0.07);
+      border-radius: 12px;
+      padding: 20px 24px;
+      margin-top: 28px;
+    }
+
+    .alt-method h3 {
+      color: #22d3ee;
+      font-size: 15px;
+      margin-bottom: 10px;
+    }
+
+    .alt-method p {
+      color: #888;
+      font-size: 14px;
+      margin-bottom: 6px;
+    }
+
+    .alt-method a {
+      color: #a78bfa;
+      text-decoration: none;
+    }
+
+    .success-msg {
+      display: none;
+      background: rgba(52, 211, 153, 0.1);
+      border: 1px solid rgba(52, 211, 153, 0.25);
+      border-radius: 12px;
+      padding: 20px 24px;
+      color: #34d399;
+      font-size: 15px;
+      text-align: center;
+      margin-top: 16px;
+    }
+
+    .success-msg .icon { font-size: 32px; display: block; margin-bottom: 8px; }
+
+    footer {
+      margin-top: 48px;
+      padding-top: 20px;
+      border-top: 1px solid #1a1d2e;
+      font-size: 12px;
+      color: #555;
+    }
+
+    footer a { color: #a78bfa; text-decoration: none; }
+  </style>
+</head>
+<body>
+
+  <div class="logo">↑ ASCEND</div>
+
+  <h1>Delete My Account</h1>
+  <p class="subtitle">We're sorry to see you go. Your request will be processed within 30 days.</p>
+
+  <div class="info-box">
+    <h2>🗑 What will be deleted</h2>
+    <ul>
+      <li>Your email address and authentication credentials</li>
+      <li>Your display name and chosen identity path</li>
+      <li>All XP, streak counts, and challenge history</li>
+      <li>Your leaderboard ranking and duel history</li>
+      <li>Any active missions or progress data</li>
+    </ul>
+  </div>
+
+  <div class="note-box">
+    <strong>⚡ Faster option — In-App Self-Service</strong>
+    Go to <strong>Profile tab → Reset Progress</strong> to instantly clear all your local and cloud data without waiting.
+  </div>
+
+  <!-- Deletion Request Form -->
+  <form id="deleteForm" onsubmit="handleSubmit(event)">
+    <label for="email">Email address used to register</label>
+    <input type="email" id="email" name="email" placeholder="your@email.com" required>
+
+    <label for="reason">Reason for deletion (optional)</label>
+    <select id="reason" name="reason">
+      <option value="">Select a reason…</option>
+      <option value="not-using">I no longer use the app</option>
+      <option value="privacy">Privacy concerns</option>
+      <option value="data">I want my data removed</option>
+      <option value="other">Other</option>
+    </select>
+
+    <label for="notes">Additional notes (optional)</label>
+    <textarea id="notes" name="notes" placeholder="Any additional information…"></textarea>
+
+    <button type="submit" class="btn-delete">🗑 Submit Deletion Request</button>
+  </form>
+
+  <div class="success-msg" id="successMsg">
+    <span class="icon">✅</span>
+    <strong>Request received!</strong>
+    We'll delete your account and all associated data within <strong>30 days</strong>.
+    You'll receive a confirmation at the email address you provided.
+  </div>
+
+  <div class="alt-method">
+    <h3>📧 Alternative: Email Us Directly</h3>
+    <p>You can also send a deletion request by email:</p>
+    <p><a href="mailto:privacy@ascend.game?subject=Account%20Deletion%20Request">privacy@ascend.game</a></p>
+    <p style="margin-top: 8px;">Include the email address associated with your account in the message.</p>
+  </div>
+
+  <footer>
+    <p>© 2026 ASCEND. &nbsp;·&nbsp; <a href="/privacy.html">Privacy Policy</a> &nbsp;·&nbsp; <a href="/">Back to App</a></p>
+  </footer>
+
+  <script>
+    function handleSubmit(e) {
+      e.preventDefault();
+      const email = document.getElementById('email').value;
+      const reason = document.getElementById('reason').value;
+      const notes = document.getElementById('notes').value;
+
+      // Build mailto link and open it
+      const subject = encodeURIComponent('Account Deletion Request');
+      const body = encodeURIComponent(
+        `Account Deletion Request\n\nEmail: ${email}\nReason: ${reason || 'Not specified'}\nNotes: ${notes || 'None'}\n\n---\nSubmitted via delete-account page`
+      );
+      window.location.href = `mailto:privacy@ascend.game?subject=${subject}&body=${body}`;
+
+      // Show success message
+      document.getElementById('deleteForm').style.display = 'none';
+      document.getElementById('successMsg').style.display = 'block';
+    }
+  </script>
+
+</body>
+</html>
