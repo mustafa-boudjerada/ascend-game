@@ -84,7 +84,7 @@
 *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
 
 html {
-  font-size: 16px;
+  font-size: 18px;
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
   text-rendering: optimizeLegibility;
@@ -140,9 +140,9 @@ h1, h2, h3, h4 {
   line-height: 1.15;
 }
 
-h1 { font-size: clamp(1.75rem, 5vw, 2.5rem); }
-h2 { font-size: clamp(1.25rem, 3.5vw, 1.75rem); }
-h3 { font-size: clamp(1rem, 2.5vw, 1.2rem); }
+h1 { font-size: clamp(1.85rem, 5.5vw, 2.75rem); }
+h2 { font-size: clamp(1.4rem, 4vw, 2rem); }
+h3 { font-size: clamp(1.1rem, 3vw, 1.35rem); }
 
 /* ─── App Shell ─── */
 .app-container {
@@ -187,7 +187,7 @@ h3 { font-size: clamp(1rem, 2.5vw, 1.2rem); }
   background: none;
   color: var(--text-muted);
   font-family: var(--font-body);
-  font-size: 10px;
+  font-size: 13px;
   font-weight: 600;
   letter-spacing: 0.04em;
   cursor: pointer;
@@ -197,7 +197,7 @@ h3 { font-size: clamp(1rem, 2.5vw, 1.2rem); }
 }
 
 .nav-tab .nav-icon {
-  font-size: 20px;
+  font-size: 24px;
   transition: all 0.3s var(--ease-bounce);
   line-height: 1;
 }
@@ -254,12 +254,12 @@ h3 { font-size: clamp(1rem, 2.5vw, 1.2rem); }
   align-items: center;
   justify-content: center;
   gap: 8px;
-  padding: 14px 28px;
+  padding: 16px 32px;
   border: none;
   border-radius: var(--radius-full);
   font-family: var(--font-display);
   font-weight: 600;
-  font-size: 15px;
+  font-size: 16px;
   letter-spacing: 0.01em;
   cursor: pointer;
   transition: all 0.25s var(--ease-out);
@@ -323,7 +323,7 @@ h3 { font-size: clamp(1rem, 2.5vw, 1.2rem); }
 }
 
 .btn-full { width: 100%; }
-.btn-lg { padding: 18px 36px; font-size: 17px; }
+.btn-lg { padding: 20px 40px; font-size: 18px; }
 
 /* ─── Option Buttons (bigger touch targets) ─── */
 .option-btn {
@@ -335,15 +335,15 @@ h3 { font-size: clamp(1rem, 2.5vw, 1.2rem); }
   border-radius: var(--radius-md);
   color: var(--text-primary);
   font-family: var(--font-body);
-  font-size: 15px;
-  line-height: 1.45;
+  font-size: 17px;
+  line-height: 1.5;
   cursor: pointer;
   transition: all 0.2s var(--ease-out);
   display: flex;
   align-items: center;
   gap: 14px;
   position: relative;
-  min-height: 56px;
+  min-height: 62px;
 }
 
 .option-btn:hover {
@@ -426,7 +426,7 @@ h3 { font-size: clamp(1rem, 2.5vw, 1.2rem); }
   background: linear-gradient(135deg, rgba(251,191,36,0.15), rgba(251,113,133,0.1));
   border: 1px solid rgba(251,191,36,0.2);
   font-weight: 800;
-  font-size: 14px;
+  font-size: 16px;
   color: var(--amber);
   font-family: var(--font-display);
 }
@@ -449,7 +449,7 @@ h3 { font-size: clamp(1rem, 2.5vw, 1.2rem); }
   padding: 5px 14px;
   border-radius: var(--radius-full);
   font-weight: 800;
-  font-size: 11px;
+  font-size: 13px;
   font-family: var(--font-display);
   letter-spacing: 0.08em;
   text-transform: uppercase;
@@ -496,7 +496,7 @@ h3 { font-size: clamp(1rem, 2.5vw, 1.2rem); }
   gap: 5px;
   padding: 4px 12px;
   border-radius: var(--radius-full);
-  font-size: 11px;
+  font-size: 13px;
   font-weight: 700;
   text-transform: uppercase;
   letter-spacing: 0.06em;
@@ -549,7 +549,7 @@ h3 { font-size: clamp(1rem, 2.5vw, 1.2rem); }
 }
 
 .challenge-prompt {
-  font-size: 17px;
+  font-size: 20px;
   font-weight: 600;
   line-height: 1.5;
   color: var(--text-primary);
@@ -622,7 +622,7 @@ h3 { font-size: clamp(1rem, 2.5vw, 1.2rem); }
 }
 
 .feedback-panel p {
-  font-size: 14px;
+  font-size: 16px;
   color: var(--text-secondary);
   line-height: 1.65;
 }
@@ -695,7 +695,7 @@ h3 { font-size: clamp(1rem, 2.5vw, 1.2rem); }
 
 .home-hero .subtitle {
   color: var(--text-secondary);
-  font-size: 14px;
+  font-size: 16px;
 }
 
 .ascend-button-wrapper {
@@ -750,7 +750,7 @@ h3 { font-size: clamp(1rem, 2.5vw, 1.2rem); }
 }
 
 .ascend-btn .ascend-label {
-  font-size: 14px;
+  font-size: 16px;
   font-weight: 800;
   letter-spacing: 0.15em;
   text-transform: uppercase;
@@ -835,7 +835,7 @@ h3 { font-size: clamp(1rem, 2.5vw, 1.2rem); }
 }
 
 .stat-card .stat-label {
-  font-size: 11px;
+  font-size: 14px;
   color: var(--text-muted);
   margin-top: 6px;
   text-transform: uppercase;
@@ -1113,7 +1113,7 @@ h3 { font-size: clamp(1rem, 2.5vw, 1.2rem); }
   padding: 8px 14px;
   border-radius: var(--radius-full);
   font-weight: 700;
-  font-size: 13px;
+  font-size: 15px;
 }
 
 .result-chip.pass {
@@ -1143,11 +1143,11 @@ h3 { font-size: clamp(1rem, 2.5vw, 1.2rem); }
   gap: 8px;
   margin-bottom: 8px;
   color: var(--text-accent);
-  font-size: 15px;
+  font-size: 17px;
 }
 
 .mission-card p {
-  font-size: 14px;
+  font-size: 16px;
   color: var(--text-secondary);
   line-height: 1.55;
   margin-bottom: 14px;
@@ -1162,7 +1162,7 @@ h3 { font-size: clamp(1rem, 2.5vw, 1.2rem); }
   background: var(--success-dim);
   color: var(--success);
   font-weight: 700;
-  font-size: 12px;
+  font-size: 14px;
 }
 
 /* ─── Lane Progress Bars ─── */
@@ -1266,7 +1266,7 @@ h3 { font-size: clamp(1rem, 2.5vw, 1.2rem); }
 @media (max-width: 480px) {
   .app-container { padding: 0 14px; }
   .challenge-card { padding: 20px 16px; }
-  .option-btn { padding: 14px 16px; font-size: 14px; min-height: 52px; }
+  .option-btn { padding: 16px 18px; font-size: 16px; min-height: 58px; }
   .stats-grid { gap: 8px; }
   .stat-card { padding: 14px 10px; }
   .stat-card .stat-value { font-size: 24px; }

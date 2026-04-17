@@ -19,22 +19,13 @@ android {
 
     signingConfigs {
         release {
-            // To sign your release APK/AAB:
-            // 1. Generate a keystore: keytool -genkey -v -keystore ascend-release.keystore -alias ascend -keyalg RSA -keysize 2048 -validity 10000
-            // 2. Create a file at android/keystore.properties with:
-            //    storeFile=../ascend-release.keystore
-            //    storePassword=YOUR_STORE_PASSWORD
-            //    keyAlias=ascend
-            //    keyPassword=YOUR_KEY_PASSWORD
-            // 3. Uncomment the block below:
-            //
-            // def keystorePropertiesFile = rootProject.file("keystore.properties")
-            // def keystoreProperties = new Properties()
-            // keystoreProperties.load(new FileInputStream(keystorePropertiesFile))
-            // storeFile file(keystoreProperties['storeFile'])
-            // storePassword keystoreProperties['storePassword']
-            // keyAlias keystoreProperties['keyAlias']
-            // keyPassword keystoreProperties['keyPassword']
+            def keystorePropertiesFile = rootProject.file("keystore.properties")
+            def keystoreProperties = new Properties()
+            keystoreProperties.load(new FileInputStream(keystorePropertiesFile))
+            storeFile file(keystoreProperties['storeFile'])
+            storePassword keystoreProperties['storePassword']
+            keyAlias keystoreProperties['keyAlias']
+            keyPassword keystoreProperties['keyPassword']
         }
     }
 
@@ -43,7 +34,7 @@ android {
             minifyEnabled true
             shrinkResources true
             proguardFiles getDefaultProguardFile('proguard-android-optimize.txt'), 'proguard-rules.pro'
-            // signingConfig signingConfigs.release  // Uncomment after keystore setup
+            signingConfig signingConfigs.release
         }
         debug {
             minifyEnabled false

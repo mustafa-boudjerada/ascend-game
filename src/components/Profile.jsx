@@ -1,13 +1,40 @@
 // ─────────────────────────────────────────────
-// ASCEND — Profile Screen
-// Stats, titles, lane progress, share card, settings
+// ASCEND — Profile Screen (Simplified v3)
+// All stats + account management in one place
 // ─────────────────────────────────────────────
+import { useState } from 'react';
 import { SKILL_LANES, PATHS } from '../data/challenges.js';
 import { getEarnedTitles } from '../hooks/useGameState.js';
 
-export default function Profile({ game, showToast, user, onSignOut, onSignIn }) {
+export default function Profile({ game, showToast, user, onSignOut, onAuth }) {
   const { state, totalXP, rank, titles } = game;
   const path = PATHS.find(p => p.id === state.path);
+  const maxLaneXP = Math.max(...Object.values(state.laneXP), 100);
+
+  // Auth form state
+  const [showAuth, setShowAuth] = useState(false);
+  const [authMode, setAuthMode] = useState('signin');
+  const [email, setEmail] = useState('');
+  const [password, setPassword] = useState('');
+  const [authLoading, setAuthLoading] = useState(false);
+  const [authError, setAuthError] = useState('');
+
+  const handleAuthSubmit = async (e) => {
+    e.preventDefault();
+    setAuthError('');
+    if (!email.trim() || !password.trim()) { setAuthError('Fill in all fields.'); return; }
+    if (password.length < 6) { setAuthError('Password needs 6+ characters.'); return; }
+    setAuthLoading(true);
+    try {
+      await onAuth(authMode, email.trim(), password);
+      setShowAuth(false);
+      showToast(authMode === 'signup' ? '✅ Account created!' : '✅ Signed in!');
+    } catch (err) {
+      setAuthError(err.message || 'Something went wrong.');
+    } finally {
+      setAuthLoading(false);
+    }
+  };
 
   const generateShareCard = () => {
     const r = state.dailyResults;
@@ -16,23 +43,15 @@ export default function Profile({ game, showToast, user, onSignOut, onSignIn }) 
     const edge = r?.edge === true ? '✅' : r?.edge === false ? '❌' : '—';
     const text = [
       `ASCEND Day ${state.streak} 🔥`,
-      ``,
       `🧠 ${mind}  💡 ${life}  ⚡ ${edge}`,
-      ``,
       `${rank.current.name} · ${totalXP.toLocaleString()} XP`,
-      state.activeMission ? `🎯 Mission: Active` : '',
-      ``,
       `Play less. Gain more. ↑`,
-    ].filter(Boolean).join('\n');
+    ].join('\n');
 
     navigator.clipboard?.writeText(text).then(() => {
-      showToast('📋 Share card copied!');
-    }).catch(() => {
-      showToast('📋 Share card generated!');
+      showToast('📋 Copied!');
     });
   };
-
-  const maxLaneXP = Math.max(...Object.values(state.laneXP), 100);
 
   return (
     <div className="screen">
@@ -44,38 +63,38 @@ export default function Profile({ game, showToast, user, onSignOut, onSignIn }) 
         }}>
           {path?.icon || '👤'}
         </div>
-        <div className="profile-name">{state.playerName}</div>
-        {path && <div className="profile-path">{path.icon} {path.name}</div>}
-        <div style={{ marginTop: '10px' }}>
+        <div className="profile-name" style={{ fontSize: '24px' }}>{state.playerName}</div>
+        <div style={{ marginTop: '8px' }}>
           <span className="rank-badge" style={{
             color: rank.current.color,
             background: rank.current.glow,
-            border: `1px solid ${rank.current.color}33`
+            border: `1px solid ${rank.current.color}33`,
+            fontSize: '14px',
           }}>
             {rank.current.name}
           </span>
         </div>
       </div>
 
-      {/* XP Breakdown */}
+      {/* XP Card */}
       <div className="card" style={{ marginBottom: '16px', textAlign: 'center' }}>
-        <div style={{ fontSize: '32px', fontWeight: '900', fontFamily: 'var(--font-display)' }}>
+        <div style={{ fontSize: '36px', fontWeight: '900', fontFamily: 'var(--font-display)' }}>
           {totalXP.toLocaleString()}
         </div>
-        <div style={{ fontSize: '13px', color: 'var(--text-muted)', marginBottom: '12px' }}>Total XP</div>
-        <div style={{ display: 'flex', justifyContent: 'center', gap: '20px' }}>
+        <div style={{ fontSize: '15px', color: 'var(--text-muted)', marginBottom: '12px' }}>Total XP</div>
+        <div style={{ display: 'flex', justifyContent: 'center', gap: '24px' }}>
           <div>
-            <div style={{ fontSize: '18px', fontWeight: '700', color: 'var(--accent-light)' }}>
+            <div style={{ fontSize: '20px', fontWeight: '700', color: 'var(--accent-light)' }}>
               {state.totalPlayXP.toLocaleString()}
             </div>
-            <div style={{ fontSize: '11px', color: 'var(--text-muted)' }}>⚡ Play XP</div>
+            <div style={{ fontSize: '13px', color: 'var(--text-muted)' }}>⚡ Play</div>
           </div>
           <div style={{ width: '1px', background: 'var(--border)' }} />
           <div>
-            <div style={{ fontSize: '18px', fontWeight: '700', color: 'var(--success)' }}>
+            <div style={{ fontSize: '20px', fontWeight: '700', color: 'var(--success)' }}>
               {state.totalLifeXP.toLocaleString()}
             </div>
-            <div style={{ fontSize: '11px', color: 'var(--text-muted)' }}>🌍 Life XP</div>
+            <div style={{ fontSize: '13px', color: 'var(--text-muted)' }}>🌍 Life</div>
           </div>
         </div>
       </div>
@@ -100,28 +119,8 @@ export default function Profile({ game, showToast, user, onSignOut, onSignIn }) 
         </div>
       </div>
 
-      {/* Titles */}
-      <h3 style={{ marginBottom: '10px' }}>Earned Titles</h3>
-      {titles.length === 0 ? (
-        <div className="card" style={{ textAlign: 'center', color: 'var(--text-muted)', fontSize: '14px' }}>
-          Complete challenges to earn titles.
-        </div>
-      ) : (
-        <div style={{ display: 'flex', flexWrap: 'wrap', gap: '8px', marginBottom: '16px' }}>
-          {titles.map(t => (
-            <span key={t.id} style={{
-              padding: '6px 14px', borderRadius: 'var(--radius-full)',
-              background: 'var(--accent-dim)', color: 'var(--text-accent)',
-              fontSize: '13px', fontWeight: '600', border: '1px solid var(--border-accent)'
-            }}>
-              {t.name}
-            </span>
-          ))}
-        </div>
-      )}
-
-      {/* Lane Progress */}
-      <h3 style={{ marginTop: '16px', marginBottom: '10px' }}>Skill Progress</h3>
+      {/* Skill Progress */}
+      <h3 style={{ marginTop: '16px', marginBottom: '10px', fontSize: '18px' }}>Skills</h3>
       <div className="lane-progress" style={{ marginBottom: '16px' }}>
         {Object.entries(SKILL_LANES).map(([key, lane]) => {
           const xp = state.laneXP[key] || 0;
@@ -129,55 +128,80 @@ export default function Profile({ game, showToast, user, onSignOut, onSignIn }) 
           return (
             <div className="lane-row" key={key}>
               <span className="lane-icon">{lane.icon}</span>
-              <span className="lane-name">{lane.name}</span>
+              <span className="lane-name" style={{ fontSize: '14px' }}>{lane.name}</span>
               <div className="lane-bar-bg">
                 <div className="lane-bar-fill" style={{ width: `${Math.min(pct, 100)}%`, background: lane.color }} />
               </div>
-              <span className="lane-xp">{xp}</span>
+              <span className="lane-xp" style={{ fontSize: '14px' }}>{xp}</span>
             </div>
           );
         })}
       </div>
 
       {/* Share */}
-      <button className="btn btn-primary btn-full" onClick={generateShareCard} style={{ marginBottom: '12px' }}>
-        📋 Copy Share Card
+      <button className="btn btn-primary btn-full" onClick={generateShareCard} style={{ marginBottom: '12px', fontSize: '16px' }}>
+        📋 Share Results
       </button>
 
       {/* Account Section */}
-      <h3 style={{ marginTop: '16px', marginBottom: '10px' }}>Account</h3>
+      <h3 style={{ marginTop: '16px', marginBottom: '10px', fontSize: '18px' }}>Account</h3>
       <div className="card" style={{ marginBottom: '12px' }}>
         {user ? (
           <div style={{ textAlign: 'center' }}>
-            <div style={{ fontSize: '13px', color: 'var(--success)', marginBottom: '4px', fontWeight: '600' }}>
+            <div style={{ fontSize: '15px', color: 'var(--success)', marginBottom: '4px', fontWeight: '600' }}>
               ☁️ Cloud Sync Active
             </div>
-            <div style={{ fontSize: '12px', color: 'var(--text-muted)', marginBottom: '12px' }}>
+            <div style={{ fontSize: '14px', color: 'var(--text-muted)', marginBottom: '12px' }}>
               {user.email}
             </div>
             <button className="btn btn-ghost" onClick={onSignOut}
-              style={{ fontSize: '13px', color: 'var(--text-muted)' }}>
+              style={{ fontSize: '14px', color: 'var(--text-muted)' }}>
               Sign Out
             </button>
           </div>
+        ) : showAuth ? (
+          <form onSubmit={handleAuthSubmit} style={{ display: 'flex', flexDirection: 'column', gap: '12px' }}>
+            <div style={{ display: 'flex', gap: '4px', padding: '4px', background: 'var(--bg-elevated)', borderRadius: 'var(--radius-full)' }}>
+              {['signin', 'signup'].map(m => (
+                <button key={m} type="button" onClick={() => { setAuthMode(m); setAuthError(''); }}
+                  style={{
+                    flex: 1, padding: '10px', border: 'none', borderRadius: 'var(--radius-full)',
+                    background: authMode === m ? 'var(--accent)' : 'transparent',
+                    color: authMode === m ? 'white' : 'var(--text-muted)',
+                    fontWeight: 700, fontSize: '14px', cursor: 'pointer', fontFamily: 'var(--font-display)',
+                  }}>
+                  {m === 'signin' ? 'Sign In' : 'Sign Up'}
+                </button>
+              ))}
+            </div>
+            <input type="email" placeholder="Email" value={email} onChange={e => setEmail(e.target.value)}
+              style={{ padding: '14px 18px', background: 'var(--bg-elevated)', border: '1.5px solid var(--border)', borderRadius: 'var(--radius-full)', color: 'var(--text-primary)', fontSize: '15px', outline: 'none' }} />
+            <input type="password" placeholder="Password" value={password} onChange={e => setPassword(e.target.value)}
+              style={{ padding: '14px 18px', background: 'var(--bg-elevated)', border: '1.5px solid var(--border)', borderRadius: 'var(--radius-full)', color: 'var(--text-primary)', fontSize: '15px', outline: 'none' }} />
+            {authError && <div style={{ padding: '10px', borderRadius: 'var(--radius-md)', background: 'var(--error-dim)', color: 'var(--error)', fontSize: '14px', textAlign: 'center' }}>{authError}</div>}
+            <button type="submit" className="btn btn-primary btn-full" disabled={authLoading} style={{ fontSize: '15px' }}>
+              {authLoading ? '...' : authMode === 'signin' ? 'Sign In' : 'Create Account'}
+            </button>
+            <button type="button" className="btn btn-ghost" onClick={() => setShowAuth(false)} style={{ fontSize: '14px' }}>Cancel</button>
+          </form>
         ) : (
           <div style={{ textAlign: 'center' }}>
-            <div style={{ fontSize: '13px', color: 'var(--warning)', marginBottom: '4px', fontWeight: '600' }}>
-              ⚠️ Playing Offline
+            <div style={{ fontSize: '15px', color: 'var(--warning)', marginBottom: '6px', fontWeight: '600' }}>
+              Playing Offline
             </div>
-            <div style={{ fontSize: '12px', color: 'var(--text-muted)', marginBottom: '12px' }}>
-              Progress saved on this device only.
+            <div style={{ fontSize: '14px', color: 'var(--text-muted)', marginBottom: '12px' }}>
+              Sign in to save progress to the cloud.
             </div>
-            <button className="btn btn-primary" onClick={onSignIn}
-              style={{ fontSize: '13px', padding: '10px 24px' }}>
-              Sign In to Sync ↑
+            <button className="btn btn-primary" onClick={() => setShowAuth(true)}
+              style={{ fontSize: '15px', padding: '12px 28px' }}>
+              Sign In ↑
             </button>
           </div>
         )}
       </div>
 
       {/* Reset */}
-      <button className="btn btn-ghost btn-full" style={{ color: 'var(--error)', fontSize: '13px' }}
+      <button className="btn btn-ghost btn-full" style={{ color: 'var(--error)', fontSize: '14px' }}
         onClick={() => {
           if (confirm('Reset all progress? This cannot be undone.')) {
             game.resetState();

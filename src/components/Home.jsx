@@ -1,12 +1,9 @@
 // ─────────────────────────────────────────────
-// ASCEND — Home Dashboard
-// Stats, Ascend button, active mission, progress
+// ASCEND — Home Dashboard (Simplified v3)
+// Clean, focused: Big button + essential info only
 // ─────────────────────────────────────────────
-import { SKILL_LANES } from '../data/challenges.js';
-
 export default function Home({ game, onStartDaily, showToast }) {
   const { state, totalXP, rank } = game;
-  const maxLaneXP = Math.max(...Object.values(state.laneXP), 1);
 
   const completeMission = () => {
     if (state.activeMission) {
@@ -22,41 +19,33 @@ export default function Home({ game, onStartDaily, showToast }) {
 
   return (
     <div className="screen">
-      {/* Hero */}
+      {/* Hero — simple and bold */}
       <div className="home-hero">
-        <h1>Welcome, {state.playerName}</h1>
+        <h1>{state.dailyCompleted ? 'Well Done!' : 'Ready to Play?'}</h1>
         <p className="subtitle">
           {state.dailyCompleted
-            ? "Today's ascent is complete. See you tomorrow."
-            : "Your daily ascent awaits."
+            ? "Come back tomorrow for more."
+            : "Tap the button to start today's challenge."
           }
         </p>
       </div>
 
-      {/* XP & Rank Progress */}
-      <div className="card" style={{ marginBottom: '16px' }}>
-        <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '8px' }}>
-          <span style={{ fontSize: '13px', color: 'var(--text-muted)' }}>
+      {/* XP Bar — simplified */}
+      <div className="card" style={{ marginBottom: '20px' }}>
+        <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '10px' }}>
+          <span style={{ fontSize: '15px', color: 'var(--text-secondary)', fontWeight: '600' }}>
             {rank.current.name} → {rank.next ? rank.next.name : 'MAX'}
           </span>
-          <span style={{ fontSize: '14px', fontWeight: '700', fontFamily: 'var(--font-display)' }}>
+          <span style={{ fontSize: '18px', fontWeight: '800', fontFamily: 'var(--font-display)' }}>
             {totalXP.toLocaleString()} XP
           </span>
         </div>
-        <div className="xp-bar-container">
+        <div className="xp-bar-container" style={{ height: '8px' }}>
           <div className="xp-bar-fill" style={{ width: `${Math.min(xpProgress, 100)}%` }} />
-        </div>
-        <div style={{ display: 'flex', justifyContent: 'space-between', marginTop: '6px' }}>
-          <span style={{ fontSize: '11px', color: 'var(--text-muted)' }}>
-            ⚡ {state.totalPlayXP} Play XP
-          </span>
-          <span style={{ fontSize: '11px', color: 'var(--success)' }}>
-            🌍 {state.totalLifeXP} Life XP
-          </span>
         </div>
       </div>
 
-      {/* Ascend Button */}
+      {/* BIG Ascend Button */}
       <div className="ascend-button-wrapper">
         <button
           className={`ascend-btn ${state.dailyCompleted ? 'completed' : ''}`}
@@ -70,31 +59,16 @@ export default function Home({ game, onStartDaily, showToast }) {
           ) : (
             <>
               <span className="ascend-icon">↑</span>
-              <span className="ascend-label">Ascend</span>
+              <span className="ascend-label">Play</span>
             </>
           )}
         </button>
       </div>
 
-      {/* Active Mission */}
-      {state.activeMission && !state.dailyCompleted && (
-        <div className="mission-card" style={{ marginBottom: '16px' }}>
-          <h3>🎯 Active Mission</h3>
-          <p>{state.activeMission.text}</p>
-          <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
-            <span className="mission-xp">+{state.activeMission.xp} Life XP</span>
-            <button className="btn btn-success" style={{ padding: '10px 20px', fontSize: '13px' }}
-              onClick={completeMission}>
-              ✓ Mission Complete
-            </button>
-          </div>
-        </div>
-      )}
-
-      {/* Today's Results (if completed) */}
+      {/* Today's Results (only after completion) */}
       {state.dailyCompleted && state.dailyResults && (
-        <div className="card" style={{ marginBottom: '16px', textAlign: 'center' }}>
-          <h3 style={{ marginBottom: '12px' }}>Today's Results</h3>
+        <div className="card" style={{ marginTop: '16px', textAlign: 'center' }}>
+          <h3 style={{ marginBottom: '14px', fontSize: '18px' }}>Today's Results</h3>
           <div className="results-grid">
             <span className={`result-chip ${state.dailyResults.mind ? 'pass' : 'fail'}`}>
               🧠 {state.dailyResults.mind ? '✓' : '✗'} Mind
@@ -112,65 +86,23 @@ export default function Home({ game, onStartDaily, showToast }) {
               </span>
             )}
           </div>
-
-          {/* Active mission after daily is done */}
-          {state.activeMission && (
-            <div className="mission-card" style={{ marginTop: '16px', textAlign: 'left' }}>
-              <h3>🎯 Real-World Mission</h3>
-              <p>{state.activeMission.text}</p>
-              <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
-                <span className="mission-xp">+{state.activeMission.xp} Life XP</span>
-                <button className="btn btn-success" style={{ padding: '10px 20px', fontSize: '13px' }}
-                  onClick={completeMission}>
-                  ✓ Completed
-                </button>
-              </div>
-            </div>
-          )}
         </div>
       )}
 
-      {/* Stats Grid */}
-      <div className="stats-grid">
-        <div className="stat-card">
-          <div className="stat-value">{state.streak}</div>
-          <div className="stat-label">🔥 Streak</div>
+      {/* Active Mission Card */}
+      {state.activeMission && (
+        <div className="mission-card" style={{ marginTop: '16px', textAlign: 'left' }}>
+          <h3>🎯 Real-World Mission</h3>
+          <p style={{ fontSize: '16px' }}>{state.activeMission.text}</p>
+          <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginTop: '12px' }}>
+            <span className="mission-xp">+{state.activeMission.xp} Life XP</span>
+            <button className="btn btn-success" style={{ padding: '12px 24px', fontSize: '15px' }}
+              onClick={completeMission}>
+              ✓ Done
+            </button>
+          </div>
         </div>
-        <div className="stat-card">
-          <div className="stat-value">{state.totalChallengesCompleted}</div>
-          <div className="stat-label">✓ Challenges</div>
-        </div>
-        <div className="stat-card">
-          <div className="stat-value">{state.missionsCompleted}</div>
-          <div className="stat-label">🌍 Missions</div>
-        </div>
-        <div className="stat-card">
-          <div className="stat-value">{state.bestStreak}</div>
-          <div className="stat-label">🏆 Best Streak</div>
-        </div>
-      </div>
-
-      {/* Lane Progress */}
-      <h3 style={{ marginTop: '24px', marginBottom: '4px' }}>Skill Lanes</h3>
-      <div className="lane-progress">
-        {Object.entries(SKILL_LANES).map(([key, lane]) => {
-          const xp = state.laneXP[key] || 0;
-          const pct = maxLaneXP > 0 ? (xp / (maxLaneXP * 1.2)) * 100 : 0;
-          return (
-            <div className="lane-row" key={key}>
-              <span className="lane-icon">{lane.icon}</span>
-              <span className="lane-name">{lane.name}</span>
-              <div className="lane-bar-bg">
-                <div
-                  className="lane-bar-fill"
-                  style={{ width: `${Math.min(pct, 100)}%`, background: lane.color }}
-                />
-              </div>
-              <span className="lane-xp">{xp}</span>
-            </div>
-          );
-        })}
-      </div>
+      )}
     </div>
   );
 }
